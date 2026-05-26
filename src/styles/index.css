@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-blush:           #F5E6DF;
+  --color-blush-mid:       #EDD5CA;
+  --color-blush-deep:      #D9A99A;
+  --color-terracotta:      #B86B5A;
+  --color-terracotta-dark: #8C4A38;
+  --color-sage:            #8A9E8C;
+  --color-sage-light:      #C8D9C9;
+  --color-cream:           #FAF6F1;
+  --color-linen:           #F3EDE5;
+  --color-warm-white:      #FDFAF7;
+  --color-ink:             #2C2118;
+  --color-ink-soft:        #5A4A3F;
+  --color-ink-muted:       #9A8880;
+  --color-gold:            #C8A97A;
+  --color-gold-light:      #E8D5B0;
+
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+
+  --radius-card:  1.5rem;
+  --radius-pill:  100px;
+  --radius-badge: 0.875rem;
+
+  --shadow-card:  0 4px 24px rgba(44, 33, 24, 0.06);
+  --shadow-float: 0 20px 80px rgba(44, 33, 24, 0.10);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-warm-white);
+  color: var(--color-ink);
+  line-height: 1.6;
+}

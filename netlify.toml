@@ -1,0 +1,32 @@
+# ─────────────────────────────────────────────────────────
+#  netlify.toml — Netlify deployment configuration
+#
+#  This tells Netlify how to build and deploy Nurra.
+#  No changes needed unless you customize your build.
+# ─────────────────────────────────────────────────────────
+
+[build]
+  command   = "npm run build"
+  publish   = "dist"
+
+# Required for React Router — sends all routes to index.html
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Cache node_modules between builds (speeds up deploys)
+[build.cache]
+  paths = ["node_modules"]
+
+# Security headers
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options        = "DENY"
+    X-XSS-Protection       = "1; mode=block"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy        = "strict-origin-when-cross-origin"
