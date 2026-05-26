@@ -13,7 +13,6 @@ export default function HomePage() {
           </p>
         </div>
       </div>
-
       <PackagesSection />
     </main>
   )
