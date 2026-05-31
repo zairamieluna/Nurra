@@ -57,6 +57,11 @@ const packages = [
 ];
 
 const Packages = () => {
+  const scrollToWaitlist = () => {
+    const el = document.getElementById('waitlist');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <section style={styles.wrap}>
       <p style={styles.label}>Care plans</p>
@@ -141,7 +146,9 @@ const Packages = () => {
               ...(pkg.btnStyle === 'outline' ? styles.btnOutline : {}),
               ...(pkg.btnStyle === 'filled'  ? styles.btnFilled  : {}),
               ...(pkg.btnStyle === 'light'   ? styles.btnLight   : {}),
-            }}>
+            }}
+              onClick={scrollToWaitlist}
+            >
               Join waitlist
             </button>
           </div>
