@@ -1,6 +1,7 @@
 // ============================================
 // NURRA — First 10 Section
 // "Special Offer for Our First 10 Moms"
+// 10% off for first 10 + extra 10% for monthly
 // ============================================
 
 const TOTAL_SPOTS = 10;
@@ -29,9 +30,48 @@ const First10 = () => {
         {/* Heading */}
         <h2 style={styles.title}>Special Offer for Our First 10 Moms</h2>
         <p style={styles.body}>
-          The first 10 moms who join Nurra will receive a launch discount and
-          early access — before anyone else.
+          Be one of our founding mothers and unlock exclusive savings —
+          because you deserve the best care at the best price.
         </p>
+
+        {/* Discount breakdown */}
+        <div style={styles.discountGrid}>
+          <div style={styles.discountItem}>
+            <span style={styles.discountPercent}>10%</span>
+            <span style={styles.discountDesc}>off for being<br />one of the first 10</span>
+          </div>
+          <div style={styles.discountPlus}>+</div>
+          <div style={styles.discountItem}>
+            <span style={styles.discountPercent}>10%</span>
+            <span style={styles.discountDesc}>extra off when<br />you choose monthly</span>
+          </div>
+          <div style={styles.discountPlus}>=</div>
+          <div style={styles.discountItem}>
+            <span style={styles.discountPercentBig}>20%</span>
+            <span style={styles.discountDesc}>total savings<br />on monthly plans</span>
+          </div>
+        </div>
+
+        {/* Example savings */}
+        <div style={styles.exampleBox}>
+          <p style={styles.exampleLabel}>Example savings</p>
+          <div style={styles.exampleRow}>
+            <span style={styles.examplePkg}>🤍 Recovery Plus</span>
+            <div style={styles.examplePrices}>
+              <span style={styles.exampleOriginal}>$149/wk</span>
+              <span style={styles.exampleArrow}>→</span>
+              <span style={styles.exampleFinal}>$134/wk</span>
+            </div>
+          </div>
+          <div style={styles.exampleRow}>
+            <span style={styles.examplePkg}>🤍 Recovery Plus monthly</span>
+            <div style={styles.examplePrices}>
+              <span style={styles.exampleOriginal}>$536/mo</span>
+              <span style={styles.exampleArrow}>→</span>
+              <span style={styles.exampleFinal}>$429/mo</span>
+            </div>
+          </div>
+        </div>
 
         {/* Spots tracker */}
         <div style={styles.spots}>
@@ -46,14 +86,16 @@ const First10 = () => {
           ))}
         </div>
         <p style={styles.spotsLabel}>
-          {TAKEN_SPOTS} of {TOTAL_SPOTS} spots taken
+          {TAKEN_SPOTS === 0
+            ? 'All 10 spots still available — be first!'
+            : `${TAKEN_SPOTS} of ${TOTAL_SPOTS} spots taken`}
         </p>
 
         {/* CTA */}
         <button style={styles.btn} onClick={scrollToWaitlist}>
-          Join Waitlist →
+          Claim my spot →
         </button>
-        <p style={styles.note}>Free to join · No credit card needed</p>
+        <p style={styles.note}>Free to join · Lock in your discount now</p>
 
       </div>
     </section>
@@ -71,7 +113,7 @@ const styles = {
     background: '#FAF7F2',
   },
   card: {
-    maxWidth: '520px',
+    maxWidth: '560px',
     margin: '0 auto',
     background: 'linear-gradient(135deg, #F2D9D5 0%, #EDE5D8 60%, #DDE8DB 100%)',
     borderRadius: '20px',
@@ -128,7 +170,7 @@ const styles = {
     fontSize: 'clamp(22px, 4vw, 30px)',
     fontWeight: 400,
     color: '#3D2E26',
-    margin: '0 0 1rem',
+    margin: '0 0 0.75rem',
     lineHeight: 1.3,
     position: 'relative',
     zIndex: 1,
@@ -138,9 +180,99 @@ const styles = {
     color: '#7A6152',
     lineHeight: 1.8,
     margin: '0 auto 1.75rem',
-    maxWidth: '360px',
+    maxWidth: '380px',
     position: 'relative',
     zIndex: 1,
+  },
+  discountGrid: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: '12px',
+    marginBottom: '1.5rem',
+    flexWrap: 'wrap',
+    position: 'relative',
+    zIndex: 1,
+  },
+  discountItem: {
+    background: '#fff',
+    borderRadius: '14px',
+    padding: '14px 16px',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    gap: '4px',
+    minWidth: '90px',
+  },
+  discountPercent: {
+    fontFamily: 'var(--font-serif)',
+    fontSize: '28px',
+    color: '#C9918A',
+    lineHeight: 1,
+  },
+  discountPercentBig: {
+    fontFamily: 'var(--font-serif)',
+    fontSize: '32px',
+    color: '#3D2E26',
+    lineHeight: 1,
+  },
+  discountDesc: {
+    fontSize: '11px',
+    color: '#8C7B72',
+    lineHeight: 1.4,
+    textAlign: 'center',
+  },
+  discountPlus: {
+    fontSize: '20px',
+    color: '#C9918A',
+    fontWeight: 300,
+  },
+  exampleBox: {
+    background: 'rgba(255,255,255,0.6)',
+    borderRadius: '12px',
+    padding: '12px 16px',
+    marginBottom: '1.5rem',
+    position: 'relative',
+    zIndex: 1,
+    textAlign: 'left',
+  },
+  exampleLabel: {
+    fontSize: '10px',
+    fontWeight: 600,
+    letterSpacing: '0.08em',
+    textTransform: 'uppercase',
+    color: '#9B5E58',
+    margin: '0 0 8px',
+  },
+  exampleRow: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: '6px 0',
+    borderTop: '0.5px solid rgba(0,0,0,0.06)',
+  },
+  examplePkg: {
+    fontSize: '12px',
+    color: '#7A6152',
+  },
+  examplePrices: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px',
+  },
+  exampleOriginal: {
+    fontSize: '12px',
+    color: '#B5C4B1',
+    textDecoration: 'line-through',
+  },
+  exampleArrow: {
+    fontSize: '11px',
+    color: '#B5C4B1',
+  },
+  exampleFinal: {
+    fontSize: '13px',
+    color: '#C9918A',
+    fontWeight: 600,
   },
   spots: {
     display: 'flex',
