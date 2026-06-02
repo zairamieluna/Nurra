@@ -55,7 +55,7 @@ const WaitlistSection = () => {
     setLoading(true);
 
     try {
-      const res = await fetch('/api/waitlist', {
+      const res = await fetch('/.netlify/functions/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
