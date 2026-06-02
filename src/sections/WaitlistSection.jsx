@@ -1,23 +1,53 @@
 // ============================================
-// NURRA — Waitlist Section
-// "Join the Nurra Waitlist"
-// 🔜 Supabase integration will be added here
+// NURRA — Waitlist Section (Validation Edition)
+// Founding Moms Waitlist with full discovery form
 // ============================================
 
 import { useState } from 'react';
 
+const hearAboutOptions = [
+  'Facebook Mom Group',
+  'Instagram',
+  'TikTok',
+  'Friend / Family',
+  'OB-GYN / Midwife / Clinic',
+  'Hospital / Postpartum Program',
+  'Google Search',
+  'Community Group / Church',
+  'Event / School',
+  'Other',
+];
+
+const stageOptions = [
+  { value: 'expecting',  label: '🤰 Expecting' },
+  { value: '0-3mo',      label: '👶 0–3 months postpartum' },
+  { value: '3-6mo',      label: '🌱 3–6 months postpartum' },
+  { value: '6-12mo',     label: '🌸 6–12 months postpartum' },
+];
+
 const WaitlistSection = () => {
-  const [firstName, setFirstName] = useState('');
-  const [email, setEmail]         = useState('');
-  const [dueDate, setDueDate]     = useState('');
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading]     = useState(false);
-  const [error, setError]         = useState('');
+  const [firstName, setFirstName]     = useState('');
+  const [email, setEmail]             = useState('');
+  const [dueDate, setDueDate]         = useState('');
+  const [stage, setStage]             = useState('');
+  const [challenge, setChallenge]     = useState('');
+  const [hearAbout, setHearAbout]     = useState('');
+  const [hearOther, setHearOther]     = useState('');
+  const [submitted, setSubmitted]     = useState(false);
+  const [loading, setLoading]         = useState(false);
+  const [error, setError]             = useState('');
+
+  const finalHearAbout = hearAbout === 'Other'
+    ? `Other: ${hearOther}`
+    : hearAbout;
 
   const handleSubmit = async () => {
-    // Basic validation
     if (!firstName.trim() || !email.trim()) {
       setError('Please enter your name and email to join.');
+      return;
+    }
+    if (!hearAbout) {
+      setError('Please tell us how you heard about Nurra.');
       return;
     }
 
@@ -25,15 +55,16 @@ const WaitlistSection = () => {
     setLoading(true);
 
     try {
-      // ✅ This will call our Netlify Function later
-      // which saves to Supabase AND emails you
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          first_name: firstName.trim(),
-          email: email.trim(),
-          due_date: dueDate || null,
+          first_name:  firstName.trim(),
+          email:       email.trim(),
+          due_date:    dueDate || null,
+          stage:       stage || null,
+          concern:     challenge.trim() || null,
+          hear_about:  finalHearAbout || null,
         }),
       });
 
@@ -48,34 +79,45 @@ const WaitlistSection = () => {
   };
 
   return (
-    // ⚠️ id="waitlist" — this is what scroll buttons target
     <section id="waitlist" style={styles.wrap}>
       <div style={styles.inner}>
-        <p style={styles.label}>Early access</p>
-        <h2 style={styles.title}>Join the Nurra Waitlist</h2>
+
+        {/* Header */}
+        <p style={styles.label}>Founding Moms Waitlist</p>
+        <h2 style={styles.title}>You don't have to navigate postpartum alone.</h2>
         <p style={styles.sub}>
-          Be one of the first moms to receive early access and a special launch discount.
+          Join our founding moms waitlist — free, limited spots, and your answers
+          help us build Nurra around what real mothers actually need.
         </p>
 
+        {/* Trust signals */}
+        <div style={styles.trustRow}>
+          {['Built with moms, for moms', 'Your story stays private 🔒', 'Free to join'].map((t) => (
+            <span key={t} style={styles.trustPill}>{t}</span>
+          ))}
+        </div>
+
         <div style={styles.card}>
-          {/* ── Success State ── */}
           {submitted ? (
+            /* ── Success ── */
             <div style={styles.success}>
               <div style={styles.successIcon}>🌸</div>
-              <p style={styles.successTitle}>You're on the list!</p>
+              <p style={styles.successTitle}>Welcome, Founding Mom!</p>
               <p style={styles.successBody}>
-                Welcome to Nurra. We'll reach out soon with your early access
-                and something special.
+                Thank you for trusting Nurra with your story. We'll reach out
+                soon with early access and something special just for you.
+              </p>
+              <p style={styles.successNote}>
+                Shaped through conversations with postpartum mothers — just like you.
               </p>
             </div>
           ) : (
-            /* ── Form State ── */
             <>
-              {/* First name */}
+              {/* ── Section 1: Basic info ── */}
+              <p style={styles.sectionLabel}>About you</p>
+
               <div style={styles.field}>
-                <label style={styles.fieldLabel} htmlFor="wl-name">
-                  First name
-                </label>
+                <label style={styles.fieldLabel} htmlFor="wl-name">First name</label>
                 <input
                   id="wl-name"
                   type="text"
@@ -86,11 +128,8 @@ const WaitlistSection = () => {
                 />
               </div>
 
-              {/* Email */}
               <div style={styles.field}>
-                <label style={styles.fieldLabel} htmlFor="wl-email">
-                  Email address
-                </label>
+                <label style={styles.fieldLabel} htmlFor="wl-email">Email address</label>
                 <input
                   id="wl-email"
                   type="email"
@@ -101,11 +140,9 @@ const WaitlistSection = () => {
                 />
               </div>
 
-              {/* Due date (optional) */}
               <div style={styles.field}>
                 <label style={styles.fieldLabel} htmlFor="wl-due">
-                  Due date{' '}
-                  <span style={styles.optional}>· optional</span>
+                  Due date <span style={styles.optional}>· optional</span>
                 </label>
                 <input
                   id="wl-due"
@@ -116,7 +153,78 @@ const WaitlistSection = () => {
                 />
               </div>
 
-              {/* Error message */}
+              {/* ── Section 2: Stage ── */}
+              <div style={styles.divider} />
+              <p style={styles.sectionLabel}>What stage are you in?</p>
+
+              <div style={styles.stageGrid}>
+                {stageOptions.map((opt) => (
+                  <button
+                    key={opt.value}
+                    onClick={() => setStage(opt.value)}
+                    style={{
+                      ...styles.stageBtn,
+                      ...(stage === opt.value ? styles.stageBtnActive : {}),
+                    }}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* ── Section 3: Challenge ── */}
+              <div style={styles.divider} />
+              <p style={styles.sectionLabel}>
+                What's your biggest postpartum challenge right now?
+                <span style={styles.optional}> · optional</span>
+              </p>
+
+              <div style={styles.field}>
+                <textarea
+                  id="wl-challenge"
+                  placeholder="e.g. Recovery, loneliness, sleep, anxiety, breastfeeding, housework, lack of support..."
+                  value={challenge}
+                  onChange={(e) => setChallenge(e.target.value)}
+                  rows={3}
+                  style={styles.textarea}
+                />
+              </div>
+
+              {/* ── Section 4: How did you hear ── */}
+              <div style={styles.divider} />
+              <p style={styles.sectionLabel}>
+                How did you hear about Nurra?
+                <span style={{ ...styles.optional, color: '#C9918A' }}> · required</span>
+              </p>
+
+              <div style={styles.hearGrid}>
+                {hearAboutOptions.map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => setHearAbout(opt)}
+                    style={{
+                      ...styles.hearBtn,
+                      ...(hearAbout === opt ? styles.hearBtnActive : {}),
+                    }}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>
+
+              {hearAbout === 'Other' && (
+                <div style={{ ...styles.field, marginTop: '0.75rem' }}>
+                  <input
+                    type="text"
+                    placeholder="Please tell us how..."
+                    value={hearOther}
+                    onChange={(e) => setHearOther(e.target.value)}
+                    style={styles.input}
+                  />
+                </div>
+              )}
+
+              {/* Error */}
               {error && <p style={styles.errorMsg}>{error}</p>}
 
               {/* Submit */}
@@ -129,10 +237,12 @@ const WaitlistSection = () => {
                 onClick={handleSubmit}
                 disabled={loading}
               >
-                {loading ? 'Joining...' : 'Join Waitlist →'}
+                {loading ? 'Joining...' : 'Join Our Founding Moms Waitlist →'}
               </button>
 
-              <p style={styles.note}>🔒 Free to join. No spam, ever.</p>
+              <p style={styles.note}>
+                Because every new mom deserves support, rest, and care. 🌸
+              </p>
             </>
           )}
         </div>
@@ -152,7 +262,7 @@ const styles = {
     background: '#F2D9D5',
   },
   inner: {
-    maxWidth: '440px',
+    maxWidth: '480px',
     margin: '0 auto',
   },
   label: {
@@ -171,19 +281,41 @@ const styles = {
     color: '#3D2E26',
     textAlign: 'center',
     margin: '0 0 0.75rem',
-    lineHeight: 1.3,
+    lineHeight: 1.35,
   },
   sub: {
     fontSize: '14px',
     color: '#7A5E58',
     textAlign: 'center',
     lineHeight: 1.75,
-    margin: '0 0 2rem',
+    margin: '0 0 1.25rem',
+  },
+  trustRow: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: '8px',
+    marginBottom: '1.75rem',
+  },
+  trustPill: {
+    fontSize: '11px',
+    fontWeight: 500,
+    color: '#7A5E58',
+    background: 'rgba(255,255,255,0.55)',
+    border: '0.5px solid rgba(201,145,138,0.3)',
+    borderRadius: '100px',
+    padding: '4px 12px',
   },
   card: {
     background: '#FAF7F2',
-    borderRadius: '16px',
+    borderRadius: '18px',
     padding: '2rem 1.5rem',
+  },
+  sectionLabel: {
+    fontSize: '13px',
+    fontWeight: 600,
+    color: '#3D2E26',
+    marginBottom: '0.85rem',
   },
   field: {
     display: 'flex',
@@ -200,7 +332,6 @@ const styles = {
     fontSize: '11px',
     fontWeight: 400,
     color: '#B5C4B1',
-    marginLeft: '4px',
   },
   input: {
     background: '#fff',
@@ -215,6 +346,73 @@ const styles = {
     boxSizing: 'border-box',
     transition: 'border-color 0.2s',
   },
+  textarea: {
+    background: '#fff',
+    border: '1px solid #EDE5D8',
+    borderRadius: '10px',
+    padding: '12px 16px',
+    fontSize: '14px',
+    color: '#3D2E26',
+    fontFamily: 'var(--font-sans)',
+    outline: 'none',
+    width: '100%',
+    boxSizing: 'border-box',
+    resize: 'vertical',
+    lineHeight: 1.6,
+    transition: 'border-color 0.2s',
+  },
+  divider: {
+    height: '1px',
+    background: '#EDE5D8',
+    margin: '1.25rem 0',
+  },
+  stageGrid: {
+    display: 'grid',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '8px',
+    marginBottom: '0.5rem',
+  },
+  stageBtn: {
+    background: '#fff',
+    border: '1.5px solid #EDE5D8',
+    borderRadius: '10px',
+    padding: '10px 12px',
+    fontSize: '12.5px',
+    color: '#7A6152',
+    fontFamily: 'var(--font-sans)',
+    cursor: 'pointer',
+    textAlign: 'left',
+    transition: 'all 0.15s',
+  },
+  stageBtnActive: {
+    background: '#FBF0EE',
+    borderColor: '#C9918A',
+    color: '#3D2E26',
+    fontWeight: 500,
+  },
+  hearGrid: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    gap: '8px',
+  },
+  hearBtn: {
+    background: '#fff',
+    border: '1.5px solid #EDE5D8',
+    borderRadius: '100px',
+    padding: '7px 14px',
+    fontSize: '12px',
+    color: '#7A6152',
+    fontFamily: 'var(--font-sans)',
+    cursor: 'pointer',
+    transition: 'all 0.15s',
+    whiteSpace: 'nowrap',
+  },
+  hearBtnActive: {
+    background: '#FBF0EE',
+    borderColor: '#C9918A',
+    color: '#3D2E26',
+    fontWeight: 500,
+  },
   errorMsg: {
     fontSize: '13px',
     color: '#C9918A',
@@ -226,38 +424,47 @@ const styles = {
     background: '#C9918A',
     color: '#FAF7F2',
     border: 'none',
-    padding: '14px',
+    padding: '15px',
     borderRadius: '100px',
-    fontSize: '15px',
+    fontSize: '14px',
     fontWeight: 500,
     fontFamily: 'var(--font-sans)',
-    marginTop: '0.5rem',
+    marginTop: '1.25rem',
     transition: 'opacity 0.2s',
+    letterSpacing: '0.01em',
   },
   note: {
     fontSize: '12px',
-    color: '#B5C4B1',
+    color: '#9B5E58',
     textAlign: 'center',
     marginTop: '1rem',
+    lineHeight: 1.6,
+    fontStyle: 'italic',
   },
   success: {
     textAlign: 'center',
     padding: '1.5rem 1rem',
   },
   successIcon: {
-    fontSize: '36px',
-    marginBottom: '0.75rem',
+    fontSize: '40px',
+    marginBottom: '1rem',
   },
   successTitle: {
     fontFamily: 'var(--font-serif)',
-    fontSize: '22px',
+    fontSize: '24px',
     color: '#3D2E26',
-    margin: '0 0 0.5rem',
+    margin: '0 0 0.75rem',
   },
   successBody: {
     fontSize: '14px',
-    color: '#8C7B72',
-    lineHeight: 1.7,
+    color: '#7A6152',
+    lineHeight: 1.75,
+    margin: '0 0 1rem',
+  },
+  successNote: {
+    fontSize: '12px',
+    color: '#B5C4B1',
+    fontStyle: 'italic',
     margin: 0,
   },
 };
